@@ -5,8 +5,8 @@ const { v4: uuidv4 } = require("../node_modules/uuid");
 const { default: axios } = require("../node_modules/axios");
 
 export const main = async (params, req) => {
-  const BASE_URL = "https://ap-south-1.aws.data.mongodb-api.com/app/data-zpawudj/endpoint/data/v1";
-  const API_KEY = "CGZhyqhav7fV563WKHepfZziJTEKbXvwws8WLgPasK3Gk0IDeUMzwrmFkgyhvdfl";
+  const BASE_URL = "";
+  const API_KEY = "";
   const { path, body, query, headers } = params;
 
   const registerUser = async () => {
@@ -37,7 +37,33 @@ export const main = async (params, req) => {
         };
   
         let createdUser = await axios(config);
-        return (createdUser.data);
+
+        let dataFetch = JSON.stringify({
+          dataSource: "TEST-1",
+          database: "test",
+          collection: "users",
+          filter: { _id: { $oid: createdUser.data.insertedId } },
+        });
+  
+        let configFetch = {
+          method: "post",
+          url: `${BASE_URL}/action/findOne`,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Request-Headers": "*",
+            apiKey: API_KEY,
+          },
+          data: dataFetch,
+        };
+  
+        let foundUser = await axios(configFetch);
+  
+        if (foundUser.data.document) {
+          return (foundUser.data.document);
+        } else {
+          return (false);
+        }
+
       } catch (error) {
         return ({ message: error.message });
       }
@@ -67,10 +93,10 @@ const checkUser = async() => {
 
       let foundUser = await axios(config);
 
-      if (foundUser) {
+      if (foundUser.data.document) {
         return (foundUser.data.document);
       } else {
-        return ({ message: "User not found", status: 404 });
+        return (false);
       }
     } catch (error) {
       return ({ message: error.message, status: 500 });
