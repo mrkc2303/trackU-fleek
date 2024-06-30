@@ -1,6 +1,6 @@
 # Fleek Functions API
 
-### API LINK: https://purring-agency-slow.functions.on-fleek.app/
+### FLEEK FUNCTION: https://purring-agency-slow.functions.on-fleek.app/
 
 This repository contains an edge function for Fleek that handles multiple API endpoints for user and project management. The following documentation provides an overview of each endpoint, its purpose, and what it returns.
 
